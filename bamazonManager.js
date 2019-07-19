@@ -16,6 +16,23 @@ connection.connect(function(err) {
   options(); 
 });
 
+function ask() { 
+    inquirer.prompt(
+      {
+        type: "input", 
+        name: "Options",
+        message: "Would you like to make another action? (type yes or no)",
+        choices: ["yes","no"]
+    }
+    ).then(function(answer){
+      if(answer.Options === "yes") {
+        options();
+      } else {
+        console.log("Thank you for your hard work!")
+        connection.end(); 
+      }
+    })
+  };
 
 function options () {
     inquirer.prompt(
@@ -42,6 +59,7 @@ function options () {
                     )
                 }
                 console.log(table.toString());
+                ask(); 
             })
         } else if (answer.options === "View low inventory") {
             connection.query("SELECT * FROM products", function(err, res) {
@@ -59,6 +77,7 @@ function options () {
                     }
                 }
                 console.log(table.toString());
+                ask(); 
             })
         } else if (answer.options === "Add to existing inventory") {
             connection.query("SELECT * FROM products", function(err,res) {
@@ -68,7 +87,7 @@ function options () {
                 {
                     type: "input", 
                     name: "itemID",
-                    message: "Please select the item to add",  
+                    message: "Please select the item id to add",  
                 },
                 {
                     type: "input",
@@ -106,6 +125,7 @@ function options () {
                             )
                         }
                     console.log(table.toString());
+                    ask(); 
                     })
                 }) 
             })   
@@ -158,6 +178,7 @@ function options () {
                             )
                         }
                     console.log(table.toString());
+                    ask();
                     })
             })
 
