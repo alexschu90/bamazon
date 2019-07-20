@@ -40,7 +40,7 @@ function purchase() {
   connection.query("SELECT * FROM products", function(err, res) {
     if (err) throw err;
     var table = new Table({
-      head: ['Item ID', 'Product Name', 'Department Name', 'Price', 'Stock Quantity' ],
+      head: ['Item ID', 'Product Name', 'Department Name', 'Price', 'Stock Quantity'],
       colWidths: [10,18,20,15,18]
     });
 
@@ -66,6 +66,8 @@ for (let i = 0; i < res.length; i++) {
     }
     ]).then(function(answer){
       chosenID = answer.itemID;
+      sales = res[parseInt(chosenID)- 1].product_sales;
+      salesTotal = parseInt(sales);
       quantity = res[parseInt(chosenID) - 1].stock_quantity;
       price = res[parseInt(chosenID) - 1].price;
       chosenAmount = parseInt(answer.quantity);
@@ -81,7 +83,18 @@ for (let i = 0; i < res.length; i++) {
           }
         ]
       )
-      total = (chosenAmount * price).toFixed(2); 
+      total = parseInt((chosenAmount * price).toFixed(2)); 
+      connection.query(
+        "UPDATE products SET ? WHERE ?",
+        [
+          {
+            product_sales: salesTotal + total
+          },
+          {
+            item_id: chosenID
+          }
+        ]
+      )
       console.log("You order has been placed! \nYour Total is: " + total);
       ask(); 
       } else {
